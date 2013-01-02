@@ -1,27 +1,27 @@
-#jac-img
-jac-img provides methods to reference image urls using permanently cachable urls.
+#jac
+jac provides methods to reference image urls using permanently cachable urls.
 
 It achieves this by using urls unique to each version of a given image, and provides middleware to serve the image with
 long cache durations.
 
 #Usage
-jac-img middleware will handle file serving and image url resolution
+jac middleware will handle file serving and image url resolution
 
 Install it using
 
-    npm install jac-img
+    npm install jac
 
 ## Example
-The following example shows how to wire up jac-img
- * App code sets up the jac-img middleware
- * A JSON file stores the configuration for the jac-img middleware
+The following example shows how to wire up jac
+ * App code sets up the jac middleware
+ * A JSON file stores the configuration for the jac middleware
  * A script updates the configuration file
 
 ### App
 ```js
 var express = require('express')
   , config  = require('./config')
-  , jac     = require('jac-img').create(config)
+  , jac     = require('jac').create(config)
   , app     = express.createServer();
 
 // Add middleware for all requests
@@ -38,12 +38,12 @@ app.get('/someview', function (req, res) {
 ```
 
 ### Config
-The configuration file is updated using jac-img's digester and read by the app. Here's a sample config json file loaded
+The configuration file is updated using jac's digester and read by the app. Here's a sample config json file loaded
 by the app.
 
 ```js
 {
-  // required - files served by jac-img
+  // required - files served by jac
   assets: [{
     fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
     key:      'spacer.gif',
@@ -68,7 +68,7 @@ Alternatively, the digester can be wired up manually
 ```js
 var path   = './config'
   , config = require(path)
-  , digest = require('jac-img').digest;
+  , digest = require('jac').digest;
 
 function save (err, assets) {
   if (err) throw err;
@@ -82,7 +82,7 @@ digest(config, save);
 
 
 ## Compatibility
-This version of jac-img is compatible with express 2.5.
+This version of jac is compatible with express 2.5.
 It depends on `res.local()` to get and set the view local `jac.img` via middleware.
 
 ## Production
@@ -101,15 +101,29 @@ scripts section after install.
 {
   "name": "myproject",
   "dependencies": {
-    "jac-img": "latest"
+    "jac": "latest"
   },
   "scripts": {
-    "postinstall": "./node_modules/jac-img/bin/jac --config ./jac.json"
+    "postinstall": "./node_modules/jac/bin/jac --config ./jac.json"
   }
 }
 ```
 
-#Tests
-Run tests
+# Running Tests
+To run the test suite first invoke the following command within the repo, installing the development dependencies:
+
+    npm install
+
+then run the tests:
 
     npm test
+
+# License
+
+(The MIT License)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

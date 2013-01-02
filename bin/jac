@@ -69,7 +69,6 @@ if (!output) {
 
 if (path.existsSync(input)) {
   config = JSON.parse(fs.readFileSync(input, 'utf-8'));
-
   config.root = config.root || root;
 }
 else {
