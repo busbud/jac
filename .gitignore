@@ -1,7 +1,5 @@
 node_modules
 temp
-public/stylesheets
-public/javascripts
 .idea
 npm-debug.log
 .DS_Store
