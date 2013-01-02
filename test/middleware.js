@@ -13,8 +13,8 @@ describe('Middleware', function () {
       , app;
 
     before(function () {
-      middleware = factory.middleware(
-        [
+      middleware = factory.create({
+        assets: [
           {
             fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
             key:      'spacer.gif',
@@ -22,7 +22,7 @@ describe('Middleware', function () {
             mtime:    new Date()
           }
         ]
-      );
+      }).middleware;
 
       app = express.createServer();
 

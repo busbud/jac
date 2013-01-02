@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var fs     = require('fs')
+  , path   = require('path')
+  , async  = require('async')
+  , mkdirp = require('mkdirp')
+  , digest = require('../index').digest;
+
+/**
+ * Usage documentation.
+ */
+
+var usage = ''
+  + '\n'
+  + '  Usage: jac [options]\n'
+  + '\n'
+  + '  Options:\n'
+  + '    -c, --config             path to input config file. default=jac.json\n'
+  + '    -o, --output             path to output config file. default=jac.json\n'
+  + '    -r, --root               path to crawl for assets. default=./public/images\n'
+  + '    -x, --extensions         comma separated file extensions to digest. default=gif,jpg,jpeg,png\n'
+  + '    -h, --help               output help information\n'
+  ;
+
+// Parse arguments
+
+var args       = process.argv.slice(2)
+  , extensions = 'gif,jpg,jpeg,png'
+  , root   = './public/images'
+  , input  = './jac.json'
+  , output = ''
+  , config;
+
+while (args.length) {
+  var arg = args.shift();
+  switch (arg) {
+    case '-h':
+    case '--help':
+      abort(usage);
+      break;
+    case '-c':
+    case '--config':
+      input = arg;
+      break;
+    case '-e':
+    case '--extensions':
+      extensions = arg;
+      break;
+    case '-o':
+    case '--output':
+      output = arg;
+      break;
+    case '-r':
+    case '--root':
+      root = arg;
+      break;
+    default:
+      break;
+  }
+}
+
+if (!output) {
+  output = input;
+}
+
+if (path.existsSync(input)) {
+  config = JSON.parse(fs.readFileSync(input, 'utf-8'));
+
+  config.root = config.root || root;
+}
+else {
+  config = {
+    root: root,
+    fileFilter: extensions.split(',').map(toExtension),
+    strategy: 'hash',
+    maxAge: (3600 * 24 * 14),
+    vdir: '/images/'
+  };
+}
+
+digest(config, function save (err, assets) {
+  if (err) {
+    abort(err);
+  }
+
+  config.assets = assets;
+
+  async.series(
+    [
+      createOutputDir,
+      saveConfig
+    ]
+  );
+
+  function createOutputDir(done) {
+    mkdirp(path.dirname(output), done);
+  }
+
+  function saveConfig(done) {
+    write(output, JSON.stringify(config, null, 2), done);
+  }
+});
+
+/**
+ * Converts a string to a file extension wildcard
+ *
+ * @param {String} s
+ * @return {String}
+ */
+function toExtension(s) {
+  return "*." + s;
+}
+
+/**
+ * echo str > path.
+ *
+ * @param {String} path
+ * @param {String} str
+ * @param {Function} fn
+ */
+
+function write(path, str, fn) {
+  fs.writeFile(path, str, fn);
+  console.log('   \x1b[36mcreate\x1b[0m : ' + path);
+}
+
+/**
+ * Mkdir -p.
+ *
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function mkdir(path, fn) {
+  mkdirp(path, parseInt(755, 8), function(err){
+    if (err) {
+      throw err;
+    }
+
+    console.log('   \033[36mcreate\033[0m : ' + path);
+
+    fn && fn();
+  });
+}
+
+/**
+ * Exit with the given `str`.
+ *
+ * @param {String} str
+ */
+
+function abort(str) {
+  console.error(str);
+  process.exit(1);
+}

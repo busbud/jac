@@ -1,11 +1,12 @@
 var _        = require('lodash');
 var url      = require('url');
+var path     = require('path');
 var async    = require('async');
 var readdirp = require('readdirp');
 
 var digester = module.exports = {};
 
-digester.selectStrategy = function (opts) {
+function selectStrategy(opts) {
   var strategy = opts.strategy;
   var digestfn = strategy;
 
@@ -15,7 +16,11 @@ digester.selectStrategy = function (opts) {
   }
 
   return digestfn;
-};
+}
+
+function routeName(entry) {
+  return entry.url + '.' + entry.digest;
+}
 
 /**
  * Processes all files under opts.root and generates the config
@@ -27,23 +32,30 @@ digester.selectStrategy = function (opts) {
 digester.process = function (opts, callback) {
   var root = opts.root || '.';
   var vdir = opts.vdir || '/images/';
-  var strategy = digester.selectStrategy(opts);
+  var strategy = selectStrategy(opts);
+  var start = Date.now();
 
   vdir = url.parse(vdir);
 
-  readdirp(opts, function (err, tree) {
+  readdirp({root: root}, function (err, tree) {
     if (err) {
       return callback(err);
     }
 
     var processed = [];
+    var entries = tree.files.filter(notHidden).map(toPaths);
+    console.log('processing %d file(s)', entries.length);
 
     async.forEachLimit(
-      tree.files.map(toPaths),
+      entries,
       10,
       processEntry,
       complete
     );
+
+    function notHidden(f) {
+      return path.basename(f.path)[0] !== '.';
+    }
 
     function toPaths (f) {
       return {
@@ -55,6 +67,8 @@ digester.process = function (opts, callback) {
     }
 
     function processEntry(entry, done) {
+      console.log('   \x1b[36mprocess\x1b[0m : ' + entry.key);
+
       strategy(entry, function (err, entry) {
         if (!err) {
           processed.push(entry);
@@ -66,9 +80,12 @@ digester.process = function (opts, callback) {
     function complete (err) {
       if (!err) {
         var config = processed.map(function (entry) {
-          entry.route = entry.url + '.' + entry.digest;
+          entry.route = routeName(entry);
           return entry;
         });
+
+        var delay = Date.now() - start;
+        console.log('processed %d file(s) in %d ms', entries.length, delay);
 
         return callback(null, config);
       }
@@ -77,18 +94,3 @@ digester.process = function (opts, callback) {
     }
   });
 };
-
-digester.process(
-  {
-    root:'../../BBud/public-website/public/images',
-    fileFilter: ['*.png', '*.jpg', '*.gif', '*.jpeg'],
-    strategy: 'hash'
-  },
-  function (err, entries) {
-    if (err) {
-      console.err(err);
-    }
-
-    console.log('done', entries[0]);
-  }
-);

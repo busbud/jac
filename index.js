@@ -1,3 +1,4 @@
 module.exports = {
-  middleware: require('./src/middleware')
+  create: require('./src/middleware').create,
+  digest: require('./src/digester').process
 };
