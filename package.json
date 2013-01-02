@@ -1,0 +1,24 @@
+{
+  "name": "jac-img",
+  "version": "0.0.1",
+  "main": "index",
+  "engines": {
+    "node": ">= 0.4.7"
+  },
+  "devDependencies": {
+    "vows": "latest",
+    "mocha": "~1.7.4",
+    "sinon": "~1.5.2",
+    "supertest": "~0.5.1",
+    "express": "~2.5.11"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec --bail"
+  },
+  "dependencies": {
+    "async": "~0.1.22",
+    "readdirp": "~0.2.2",
+    "lodash": "~1.0.0-rc.3",
+    "send": "~0.1.0"
+  }
+}
