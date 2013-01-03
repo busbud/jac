@@ -34,6 +34,7 @@ digester.process = function (opts, callback) {
   var vdir = opts.vdir || '/images/';
   var strategy = selectStrategy(opts);
   var start = Date.now();
+  var base = process.cwd();
 
   vdir = url.parse(vdir);
 
@@ -59,7 +60,7 @@ digester.process = function (opts, callback) {
 
     function toPaths (f) {
       return {
-        fullPath: f.fullPath,
+        fullPath: path.relative(base, f.fullPath),
         key: f.path,
         url: url.resolve(vdir, f.path),
         mtime: f.stat.mtime

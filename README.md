@@ -104,7 +104,7 @@ scripts section after install.
     "jac": "latest"
   },
   "scripts": {
-    "postinstall": "./node_modules/jac/bin/jac --config ./jac.json"
+    "postinstall": "./node_modules/jac/bin/jac"
   }
 }
 ```
