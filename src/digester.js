@@ -32,20 +32,28 @@ function routeName(entry) {
 digester.process = function (opts, callback) {
   var root = opts.root || '.';
   var vdir = opts.vdir || '/images/';
+  var filter   = opts.fileFilter || ['*.gif', '*.jpg', '*.jpeg', '*.png'];
+  var silent   = opts.silent;
   var strategy = selectStrategy(opts);
-  var start = Date.now();
-  var base = process.cwd();
+  var start    = Date.now();
+  var base     = process.cwd();
 
   vdir = url.parse(vdir);
 
-  readdirp({root: root}, function (err, tree) {
+  function log () {
+    if (!silent) {
+      console.log.apply(null, Array.prototype.slice.call(arguments));
+    }
+  }
+
+  readdirp({root: root, fileFilter: filter}, function (err, tree) {
     if (err) {
       return callback(err);
     }
 
     var processed = [];
     var entries = tree.files.filter(notHidden).map(toPaths);
-    console.log('processing %d file(s)', entries.length);
+    log('processing %d file(s)', entries.length);
 
     async.forEachLimit(
       entries,
@@ -68,7 +76,7 @@ digester.process = function (opts, callback) {
     }
 
     function processEntry(entry, done) {
-      console.log('   \x1b[36mprocess\x1b[0m : ' + entry.key);
+      log('   \x1b[36mprocess\x1b[0m : ' + entry.key);
 
       strategy(entry, function (err, entry) {
         if (!err) {
@@ -88,10 +96,10 @@ digester.process = function (opts, callback) {
             entry.route = routeName(entry);
             return entry;
           })
-          .values();
+          .value();
 
         var delay = Date.now() - start;
-        console.log('processed %d file(s) in %d ms', entries.length, delay);
+        log('processed %d file(s) in %d ms', entries.length, delay);
 
         return callback(null, config);
       }

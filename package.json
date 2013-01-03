@@ -9,7 +9,8 @@
     "vows": "~0.7.0",
     "mocha": "~1.7.4",
     "supertest": "~0.5.1",
-    "express": "~2.5.11"
+    "express": "~2.5.11",
+    "should": "~1.2.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --bail"
