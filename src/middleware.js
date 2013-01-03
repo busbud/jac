@@ -62,6 +62,11 @@ module.exports.create = function (config) {
       return next();
     }
 
+    // Add route information for logging purposes
+    req.route = {
+      path: '<jac.middleware>'
+    };
+
     send(req, hit.fullPath)
       .maxage(config.maxAge)
       .on('error', next)

@@ -80,10 +80,15 @@ digester.process = function (opts, callback) {
 
     function complete (err) {
       if (!err) {
-        var config = processed.map(function (entry) {
-          entry.route = routeName(entry);
-          return entry;
-        });
+        var config = _(processed)
+          .sortBy(function (entry) {
+            return entry.fullPath;
+          })
+          .map(function (entry) {
+            entry.route = routeName(entry);
+            return entry;
+          })
+          .values();
 
         var delay = Date.now() - start;
         console.log('processed %d file(s) in %d ms', entries.length, delay);
