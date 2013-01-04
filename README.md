@@ -1,9 +1,10 @@
 #jac
-[![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
 jac provides methods to reference image urls using permanently cachable urls.
 
 It achieves this by using urls unique to each version of a given image, and provides middleware to serve the image with
 long cache durations.
+
+[![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
 
 #Usage
 jac middleware will handle file serving and image url resolution
