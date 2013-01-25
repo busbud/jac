@@ -27,6 +27,7 @@ var usage = ''
   ;
 
 // Parse arguments
+var extensionsUsed = false;
 
 var args       = process.argv.slice(2)
   , extensions = 'gif,jpg,jpeg,png'
@@ -49,6 +50,7 @@ while (args.length) {
     case '-x':
     case '--extensions':
       extensions = arg;
+      extensionsUsed = true;
       break;
     case '-o':
     case '--output':
@@ -68,8 +70,12 @@ if (!output) {
 }
 
 if (path.existsSync(input)) {
-  config = JSON.parse(fs.readFileSync(input, 'utf-8'));
+  config      = JSON.parse(fs.readFileSync(input, 'utf-8'));
   config.root = config.root || root;
+
+  if (extensionsUsed) {
+    config.fileFilter = extensions.split(',').map(toExtension);
+  }
 }
 else {
   config = {

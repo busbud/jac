@@ -61,5 +61,13 @@ describe('Digester', function () {
         e.should.have.property('route');
       }
     });
+
+    it('entries\' route should have a querystring digest', function () {
+      entries.forEach(verify);
+
+      function verify (e) {
+        e.route.should.equal(e.url + '?' + e.digest);
+      }
+    });
   });
 });

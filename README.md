@@ -49,7 +49,7 @@ by the app.
   assets: [{
     fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
     key:      'spacer.gif',
-    route:    '/images/spacer.gif.b64Digest'
+    route:    '/images/spacer.gif?b64Digest'
   }],
 
   // optional - cache control max age in seconds (default 2 weeks)

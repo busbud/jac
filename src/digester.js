@@ -19,7 +19,7 @@ function selectStrategy(opts) {
 }
 
 function routeName(entry) {
-  return entry.url + '.' + entry.digest;
+  return entry.url + '?' + entry.digest;
 }
 
 /**
