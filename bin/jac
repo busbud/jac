@@ -46,7 +46,7 @@ while (args.length) {
     case '--config':
       input = arg;
       break;
-    case '-e':
+    case '-x':
     case '--extensions':
       extensions = arg;
       break;
