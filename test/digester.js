@@ -1,4 +1,4 @@
-var vows   = require('should');
+var should = require('should');
 var path   = require('path');
 
 describe('Digester', function () {

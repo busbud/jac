@@ -1,4 +1,4 @@
-var vows   = require('vows'); // used for assert functions
+var should = require('should');
 var path   = require('path');
 var assert = require('assert');
 var express= require('express');
@@ -45,11 +45,11 @@ describe('Middleware', function () {
     });
 
     it('should not be null', function () {
-      assert.isNotNull(middleware);
+      should.exist(middleware);
     });
 
     it('should be a function', function () {
-      assert.isFunction(middleware);
+      middleware.should.be.instanceof(Function);
     });
 
     it('should stream the img file on exact url match', function (done) {

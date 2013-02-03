@@ -1,4 +1,4 @@
-var vows   = require('vows'); // used for assert functions
+var should = require('should');
 var path   = require('path');
 var assert = require('assert');
 var express= require('express');
@@ -27,11 +27,12 @@ describe('Hash Strategy', function () {
         });
 
         it('should not be null', function () {
-          assert.isNotNull(strategy);
+          should.exist(strategy);
         });
 
         it('should have a digest method', function () {
-          assert.isFunction(strategy.digest);
+          should.exist(strategy.digest);
+          strategy.digest.should.be.instanceof(Function);
         });
 
         describe('handles existing content', function () {
@@ -44,9 +45,10 @@ describe('Hash Strategy', function () {
           });
 
           it('should set digest as first N chars of hash', function () {
-            assert.isNotNull(entry);
-            assert.equal(expectedDigest, entry.digest);
-            assert.lengthOf(entry.digest, length);
+            should.exist(entry);
+            entry.should.have.ownProperty('digest');
+            entry.digest.should.equal(expectedDigest);
+            entry.digest.should.have.length(length);
           });
         });
 
@@ -65,12 +67,12 @@ describe('Hash Strategy', function () {
           });
 
           it('should call back with error', function () {
-            assert.isNotNull(error);
-            assert.equal(error.code, 'ENOENT');
+            should.exist(error);
+            error.code.should.equal('ENOENT');
           });
 
           it('entry should be undefined', function () {
-            assert.isUndefined(entry);
+            should.not.exist(entry);
           });
         });
       });
