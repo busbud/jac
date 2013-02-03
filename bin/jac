@@ -21,7 +21,7 @@ var usage = ''
   + '  Options:\n'
   + '    -c, --config             path to input config file. default=jac.json\n'
   + '    -o, --output             path to output config file. default=jac.json\n'
-  + '    -r, --root               path to crawl for assets. default=./public/images\n'
+  + '    -r, --root               path to crawl for assets. default=./public\n'
   + '    -x, --extensions         comma separated file extensions to digest. default=gif,jpg,jpeg,png\n'
   + '    -h, --help               output help information\n'
   ;
@@ -31,7 +31,7 @@ var extensionsUsed = false;
 
 var args       = process.argv.slice(2)
   , extensions = 'gif,jpg,jpeg,png'
-  , root   = './public/images'
+  , root   = './public'
   , input  = './jac.json'
   , output = ''
   , config;

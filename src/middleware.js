@@ -47,9 +47,7 @@ module.exports.create = function (config) {
    */
   function locals (res) {
     var jac = res.local('jac') || {};
-    jac.img = {
-      resolve: resolve
-    };
+    jac.resolve = resolve;
 
     res.local('jac', jac);
   }

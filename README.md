@@ -1,13 +1,13 @@
 #jac
-jac provides methods to reference image urls using permanently cachable urls.
+jac provides methods to reference asset urls using permanently cachable urls.
 
-It achieves this by using urls unique to each version of a given image, and provides middleware to serve the image with
+It achieves this by using urls unique to each version of a given asset, and provides middleware to serve the asset with
 long cache durations.
 
 [![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
 
 #Usage
-jac middleware will handle file serving and image url resolution
+jac middleware will handle asset file serving and asset url resolution
 
 Install it using
 
@@ -32,8 +32,8 @@ app.use(jac.middleware);
 // Add view that resolves an image url
 app.get('/someview', function (req, res) {
   var jac = res.local('jac')        // returns jac view helper
-    , key = 'spacer.gif'            // matches config key
-    , url = jac.img.resolve(key);   // returns url with digest, handled by middleware
+    , key = '/images/spacer.gif'    // matches config key
+    , url = jac.resolve(key);       // returns url with digest, handled by middleware
 
   res.send(url);
 });
@@ -48,7 +48,7 @@ by the app.
   // required - files served by jac
   assets: [{
     fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
-    key:      'spacer.gif',
+    key:      '/images/spacer.gif',
     route:    '/images/spacer.gif?b64Digest'
   }],
 

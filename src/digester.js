@@ -31,7 +31,7 @@ function routeName(entry) {
  */
 digester.process = function (opts, callback) {
   var root = opts.root || '.';
-  var vdir = opts.vdir || '/images/';
+  var vdir = opts.vdir || '/';
   var filter   = opts.fileFilter || ['*.gif', '*.jpg', '*.jpeg', '*.png'];
   var silent   = opts.silent;
   var strategy = selectStrategy(opts);

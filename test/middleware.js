@@ -17,8 +17,8 @@ describe('Middleware', function () {
         assets: [
           {
             fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
-            key:      'spacer.gif',
-            route:    '/spacer.gif.b64Digest',
+            key:      'images/spacer.gif',
+            route:    '/images/spacer.gif.b64Digest',
             mtime:    new Date()
           }
         ]
@@ -30,10 +30,10 @@ describe('Middleware', function () {
 
       // Set up views for testing middleware
       app.get('/view-spacer', function (req, res) {
-        res.send(res.local('jac').img.resolve('spacer.gif'));
+        res.send(res.local('jac').resolve('images/spacer.gif'));
       });
       app.get('/view-unresolved', function (req, res) {
-        res.send(res.local('jac').img.resolve('noexisto.gif'));
+        res.send(res.local('jac').resolve('images/noexisto.gif'));
       });
       app.error(function (err, req, res, next) {
         res.send(err.message, 500);
@@ -54,7 +54,7 @@ describe('Middleware', function () {
 
     it('should stream the img file on exact url match', function (done) {
       request(app)
-        .get('/spacer.gif.b64Digest')
+        .get('/images/spacer.gif.b64Digest')
         .expect('Cache-Control', 'public, max-age=' + twoweeks)
         .expect('Content-Type', 'image/gif')
         .expect('Content-Length', '43')
@@ -63,26 +63,26 @@ describe('Middleware', function () {
 
     it('should 404 on digest mismatch', function (done) {
       request(app)
-        .get('/spacer.gif.b64DigestX')
+        .get('/images/spacer.gif.b64DigestX')
         .expect(404, done);
     });
 
     it('should 404 on digest omission', function (done) {
       request(app)
-        .get('/spacer.gif')
+        .get('/images/spacer.gif')
         .expect(404, done);
     });
 
     it('should resolve the img url for other responses', function (done) {
       request(app)
         .get('/view-spacer')
-        .expect(200, '/spacer.gif.b64Digest', done);
+        .expect(200, '/images/spacer.gif.b64Digest', done);
     });
 
     it('should throw an error for unknown img urls', function (done) {
       request(app)
         .get('/view-unresolved')
-        .expect(500, 'jac-img: key noexisto.gif not found, regenerate jac-img config', done);
+        .expect(500, 'jac-img: key images/noexisto.gif not found, regenerate jac-img config', done);
     });
   });
 });
