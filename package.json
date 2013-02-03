@@ -1,9 +1,10 @@
 {
   "name": "jac",
   "version": "0.0.2",
+  "description": "jac provides methods to reference asset urls using permanently cachable urls.",
   "main": "index",
   "engines": {
-    "node": ">= 0.4.7"
+    "node": ">= 0.6"
   },
   "repository": {
     "type": "git",
