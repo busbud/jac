@@ -1,10 +1,20 @@
-#jac
+#jac [![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
+
+> Really when you push something out live to the world, you never want to change it without changing the name because
+> there are so many misconfigured proxies out there. About 1% to 10% of your users will never get an update
+> unless you change the name.
+
+> You can make it cachable for 10 years, you're never going to push a change without changing the name of the file.<br/>
+
+> <cite>- Steve Souders. HTML5DevConf (Jan 10, 2013).
+  <a href="http://marakana.com/s/post/1360/cache_is_king_steve_souders_html5_video">Cache is king</a>
+  availalable from <a href="http://mrkn.co/3wzua">http://mrkn.co/3wzua</a></cite>
+
+
 jac provides methods to reference asset urls using permanently cachable urls.
 
 It achieves this by using urls unique to each version of a given asset, and provides middleware to serve the asset with
 long cache durations.
-
-[![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
 
 #Usage
 jac middleware will handle asset file serving and asset url resolution
