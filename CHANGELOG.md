@@ -1,3 +1,7 @@
+## v0.0.3
+
+* Add support to use `jac.resolve` with CSS files (offline)
+
 ## v0.0.2
 
 * Generalize to any static asset

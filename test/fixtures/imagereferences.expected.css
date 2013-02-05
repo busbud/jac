@@ -1,0 +1,13 @@
+.test {background:url(/images/spacer.gif.b64Digest)}
+.test {background:url(/images/spacer.gif.b64Digest);}
+.test {background: url(/images/spacer.gif.b64Digest)}
+.test {background: url('/images/spacer.gif.b64Digest')}
+.test {background: url("/images/spacer.gif.b64Digest")}
+
+.test {
+  background:url(/images/spacer.gif.b64Digest)
+}
+
+.test {
+  background:   url(/images/spacer.gif.b64Digest);
+}
