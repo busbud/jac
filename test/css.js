@@ -33,9 +33,10 @@ describe('CSS filter', function () {
               route:    '/images/spacer.gif.b64Digest',
               mtime:    new Date()
             }
-          ]
+          ],
+          css: files,
+          silent: true
         },
-        files,
         verify
       );
 

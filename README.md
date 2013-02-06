@@ -59,7 +59,7 @@ by the app.
   assets: [{
     fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
     key:      '/images/spacer.gif',
-    route:    '/images/spacer.gif?b64Digest'
+    route:    '/images/b64Digest/spacer.gif'
   }],
 
   // optional - cache control max age in seconds (default 2 weeks)
@@ -92,6 +92,45 @@ function save (err, assets) {
 digest(config, save);
 ```
 
+### Replacing references in CSS
+jac can be configured to process CSS files as part of the update process. It will ignore image references from external
+sites (eg urls with an [authority](http://medialize.github.com/URI.js/docs.html#accessors-authority)), and will attempt
+to resolve all other urls.
+
+If it fails to resolve a url, it will throw an error, allowing you to find the problematic reference. Most likely, this
+will easily be corrected by adjusting the path to the image to make it root relative.
+
+Here's an example that will result in jac replacing the image reference
+
+__main.css__
+
+```css
+body {background: url(/images/happy.png);}
+```
+
+__config.json__
+
+```js
+{
+  // required - files served by jac
+  assets: [{
+    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),
+    key:      '/images/happy.png',
+    route:    '/images/b64Digest/happy.png'
+  }],
+
+  css: {
+    'public/stylesheets/main.css': 'src/stylesheets/main.css'
+  }
+}
+```
+
+To run the CSS replacement, update the jac config file to include the css property and use the following command
+
+```bash
+css --config ./config.json
+```
+
 
 ## Compatibility
 This version of jac is compatible with express 2.5.
@@ -120,6 +159,8 @@ scripts section after install.
   }
 }
 ```
+
+By default, jac will load the config from the `jac.json` file at the project root.
 
 # Running Tests
 To run the test suite first invoke the following command within the repo, installing the development dependencies:

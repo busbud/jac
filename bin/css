@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+"use strict";
+
+/**
+ * Module dependencies.
+ */
+
+var fs     = require('fs');
+var path   = require('path');
+var exists = fs.existsSync || path.existsSync;
+var css    = require('../index').css;
+
+/**
+ * Usage documentation.
+ */
+
+var usage = ''
+  + '\n'
+  + '  Usage: css [options]\n'
+  + '\n'
+  + '  Options:\n'
+  + '    -c, --config             path to input config file. default=jac.json\n'
+  + '    -h, --help               output help information\n'
+  ;
+
+// Parse arguments
+var args   = process.argv.slice(2);
+var input  = './jac.json';
+
+while (args.length) {
+  var arg = args.shift();
+  switch (arg) {
+    case '-h':
+    case '--help':
+      abort(usage);
+      break;
+    case '-c':
+    case '--config':
+      input = arg;
+      break;
+    default:
+      break;
+  }
+}
+
+if (exists(input)) {
+  abort('Could not find ' + input);
+}
+
+var config = JSON.parse(fs.readFileSync(input, 'utf-8'));
+
+css(config, function done (err) {
+  if (err) {
+    abort(err);
+  }
+
+  console.log('done');
+});
+
+/**
+ * Exit with the given `str`.
+ *
+ * @param {String} str
+ */
+
+function abort(str) {
+  console.error(str);
+  process.exit(1);
+}

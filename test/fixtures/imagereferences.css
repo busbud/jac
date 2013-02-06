@@ -4,6 +4,8 @@
 .test {background: url('/images/spacer.gif')}
 .test {background: url("/images/spacer.gif")}
 
+.test {background: url(http://othersite.com/pic.png)}
+
 .test {
   background:url(/images/spacer.gif)
 }
