@@ -71,7 +71,7 @@ digester.process = function (opts, callback) {
     function toPaths (f) {
       return {
         fullPath: path.relative(base, f.fullPath),
-        key: f.path,
+        key: url.resolve(vdir, f.path),
         url: url.resolve(vdir, f.path),
         mtime: f.stat.mtime
       };

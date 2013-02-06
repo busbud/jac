@@ -71,5 +71,13 @@ describe('Digester', function () {
         e.route.should.equal(e.url + '?' + e.digest);
       }
     });
+
+    it('entries\' key should start with a \'/\'', function () {
+      entries.forEach(verify);
+
+      function verify (e) {
+        e.key[0].should.equal('/');
+      }
+    });
   });
 });
