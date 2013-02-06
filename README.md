@@ -94,8 +94,8 @@ digest(config, save);
 
 ### Replacing references in CSS
 jac can be configured to process CSS files as part of the update process. It will ignore image references from external
-sites (eg urls with an [authority](http://medialize.github.com/URI.js/docs.html#accessors-authority)), and will attempt
-to resolve all other urls.
+sites (eg urls with an [authority](http://medialize.github.com/URI.js/docs.html#accessors-authority)) and data-uris,
+and will attempt to resolve all other urls.
 
 If it fails to resolve a url, it will throw an error, allowing you to find the problematic reference. Most likely, this
 will easily be corrected by adjusting the path to the image to make it root relative.

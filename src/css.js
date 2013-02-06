@@ -68,9 +68,13 @@ css.process = function (config, done) {
       var replaced = contents.toString().replace(extractor, function (prop, url) {
         var uri = new URIjs(url);
 
-        if (!uri.authority()) {
+        if (!uri.authority() && !uri.protocol()) {
           count++;
-          return prop.replace(url, resolve(url));
+          try {
+            return prop.replace(url, resolve(url));
+          } catch(ex) {
+            throw new Error(file + ": " + ex.toString());
+          }
         } else {
           return prop;
         }
