@@ -4,6 +4,7 @@ var _        = require('lodash');
 var url      = require('url');
 var path     = require('path');
 var async    = require('async');
+var URIjs    = require('URIjs');
 var readdirp = require('readdirp');
 
 var digester = module.exports = {};
@@ -20,8 +21,19 @@ function selectStrategy(opts) {
   return digestfn;
 }
 
+/**
+ * Generate a route name by injecting the digest into the path
+ *
+ * @param entry
+ * @return {String}
+ */
 function routeName(entry) {
-  return entry.url + '?' + entry.digest;
+  var original = new URIjs(entry.url);
+  var modified = original
+    .clone()
+    .directory(original.directory() + '/' + entry.digest);
+
+  return modified.href();
 }
 
 /**

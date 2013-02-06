@@ -64,11 +64,23 @@ describe('Digester', function () {
       }
     });
 
-    it('entries\' route should have a querystring digest', function () {
+    /**
+      Don't include a query string in the URL for static resources.
+
+      Most proxies, most notably Squid up through version 3.0, do not cache resources with a "?" in
+      their URL even if a Cache-control: public header is present in the response. To enable proxy
+      caching for these resources, remove query strings from references to static resources, and
+      instead encode the parameters into the file names themselves.
+
+      - https://developers.google.com/speed/docs/best-practices/caching
+
+     */
+    it('entries\' route should not have a querystring, but should contain digest in path', function () {
       entries.forEach(verify);
 
       function verify (e) {
-        e.route.should.equal(e.url + '?' + e.digest);
+        e.route.indexOf('?').should.equal(-1);
+        e.route.indexOf(e.digest).should.not.equal(-1);
       }
     });
 
