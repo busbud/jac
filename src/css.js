@@ -85,7 +85,7 @@ css.process = function (config, done) {
 
     steps.push(function write(contents, count, cb) {
       var output = sourcemap[file];
-      log('updating %s with %d replacements', output, count);
+      log('updating %s with %d replacement(s)', output, count);
 
       fs.writeFile(output, contents, cb);
     });
