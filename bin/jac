@@ -7,6 +7,7 @@
 
 var fs     = require('fs');
 var path   = require('path');
+var exists = fs.existsSync || path.existsSync;
 var async  = require('async');
 var mkdirp = require('mkdirp');
 var digest = require('../index').digest;
@@ -70,7 +71,7 @@ if (!output) {
   output = input;
 }
 
-if (path.existsSync(input)) {
+if (exists(input)) {
   config      = JSON.parse(fs.readFileSync(input, 'utf-8'));
   config.root = config.root || root;
 

@@ -43,7 +43,7 @@ while (args.length) {
   }
 }
 
-if (exists(input)) {
+if (!exists(input)) {
   abort('Could not find ' + input);
 }
 

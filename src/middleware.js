@@ -36,7 +36,7 @@ module.exports.create = function (config) {
     var route = keys[key];
 
     if (!route) {
-      throw new Error('jac-img: key ' + key + ' not found, regenerate jac-img config');
+      throw new Error('jac: key ' + key + ' not found, regenerate jac config');
     }
 
     return route;
