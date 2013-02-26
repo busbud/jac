@@ -84,8 +84,7 @@ digester.process = function (opts, callback) {
       return {
         fullPath: path.relative(base, f.fullPath),
         key: url.resolve(vdir, f.path),
-        url: url.resolve(vdir, f.path),
-        mtime: f.stat.mtime
+        url: url.resolve(vdir, f.path)
       };
     }
 

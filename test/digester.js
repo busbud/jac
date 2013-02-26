@@ -58,7 +58,6 @@ describe('Digester', function () {
         e.should.have.property('fullPath');
         e.should.have.property('key');
         e.should.have.property('url');
-        e.should.have.property('mtime');
         e.should.have.property('digest');
         e.should.have.property('route');
       }
