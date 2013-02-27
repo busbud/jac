@@ -1,3 +1,7 @@
+## v0.0.3
+
+* Remove mtime in digest
+
 ## v0.0.2
 
 * Generalize to any static asset
