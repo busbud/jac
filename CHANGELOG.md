@@ -1,10 +1,10 @@
 ## v0.0.4
 
-* Remove mtime in digest
+* Add support to use `jac.resolve` with CSS files (offline)
 
 ## v0.0.3
 
-* Add support to use `jac.resolve` with CSS files (offline)
+* Remove mtime in digest
 
 ## v0.0.2
 
