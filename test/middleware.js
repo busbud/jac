@@ -20,8 +20,7 @@ describe('Middleware', function () {
           {
             fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
             key:      'images/spacer.gif',
-            route:    '/images/spacer.gif.b64Digest',
-            mtime:    new Date()
+            route:    '/images/b64Digest/spacer.gif'
           }
         ]
       }).middleware;
@@ -56,7 +55,7 @@ describe('Middleware', function () {
 
     it('should stream the img file on exact url match', function (done) {
       request(app)
-        .get('/images/spacer.gif.b64Digest')
+        .get('/images/b64Digest/spacer.gif')
         .expect('Cache-Control', 'public, max-age=' + twoweeks)
         .expect('Content-Type', 'image/gif')
         .expect('Content-Length', '43')
@@ -65,7 +64,7 @@ describe('Middleware', function () {
 
     it('should 404 on digest mismatch', function (done) {
       request(app)
-        .get('/images/spacer.gif.b64DigestX')
+        .get('/images/b64DigestX/spacer.gif')
         .expect(404, done);
     });
 
@@ -78,7 +77,7 @@ describe('Middleware', function () {
     it('should resolve the img url for other responses', function (done) {
       request(app)
         .get('/view-spacer')
-        .expect(200, '/images/spacer.gif.b64Digest', done);
+        .expect(200, '/images/b64Digest/spacer.gif', done);
     });
 
     it('should throw an error for unknown img urls', function (done) {

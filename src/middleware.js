@@ -43,6 +43,16 @@ module.exports.create = function (config) {
   }
 
   /**
+   * Determines if the route is handled by the middleware
+   *
+   * @param url
+   * @return {Boolean}
+   */
+  function isKnownRoute (url) {
+    return url in routes;
+  }
+
+  /**
    * Inject jac img view locals
    *
    * @param res  express response object
@@ -74,7 +84,8 @@ module.exports.create = function (config) {
   }
 
   return {
-    middleware: middleware,
-    resolve: resolve
+    middleware:   middleware,
+    resolve:      resolve,
+    isKnownRoute: isKnownRoute
   };
 };

@@ -22,7 +22,7 @@ var css = module.exports = {};
 css.process = function (config, done) {
   var files       = config.css;
   var silent      = config.silent;
-  var resolve     = middleware.create(config).resolve;
+  var jac         = middleware.create(config);
   var concurrency = 1;
   var sources     = _.values(files);
   var sourcemap   = _.invert(files);
@@ -71,9 +71,13 @@ css.process = function (config, done) {
         if (!uri.authority() && !uri.protocol()) {
           count++;
           try {
-            return prop.replace(url, resolve(url));
+            if (jac.isKnownRoute(url)) {
+              // Route is already transformed
+              return prop;
+            }
+            return prop.replace(url, jac.resolve(url));
           } catch(ex) {
-            throw new Error(file + ": " + ex.toString());
+            throw new Error(file + ": " + ex.toString() + ' (or refresh/update your css)');
           }
         } else {
           return prop;
