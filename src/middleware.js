@@ -18,7 +18,7 @@ module.exports.create = function (config) {
   }, {});
 
   var assetsByKey = assets.reduce(function (memo, entry) {
-    memo[entry.key] = entry.route;
+    memo[entry.key] = entry;
     return memo;
   }, {});
 
@@ -33,13 +33,13 @@ module.exports.create = function (config) {
    * @throws {Error} if key not found
    */
   function resolveAsset (key) {
-    var route = assetsByKey[key];
+    var asset = assetsByKey[key];
 
-    if (!route) {
-      throw new Error('jac: key ' + key + ' not found, regenerate jac config');
+    if (!asset) {
+      throw new Error('jac: key ' + key + ' not found, regenerate jac config or update key value to match key in jac config');
     }
 
-    return route;
+    return asset.url;
   }
 
   /**

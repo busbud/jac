@@ -84,7 +84,7 @@ describe('Middleware', function () {
     it('should throw an error for unknown img urls', function (done) {
       request(app)
         .get('/view-unresolved')
-        .expect(500, 'jac: key /images/noexisto.gif not found, regenerate jac config', done);
+        .expect(500, 'jac: key /images/noexisto.gif not found, regenerate jac config or update key value to match key in jac config', done);
     });
   });
 });
