@@ -24,13 +24,14 @@ function selectStrategy(opts) {
 /**
  * Generate a route name by injecting the digest into the path
  *
- * @param entry
+ * @param {Object} entry
  * @return {String}
  */
 function routeName(entry) {
   var original = new URIjs(entry.url);
   var modified = original
     .clone()
+    .host('')
     .directory(original.directory() + '/' + entry.digest);
 
   return modified.href();
@@ -46,6 +47,7 @@ function routeName(entry) {
 digester.process = function (opts, callback) {
   var root = opts.root || '.';
   var vdir = opts.vdir || '/';
+  var host = opts.host || '';
   var filter   = opts.fileFilter || ['*.gif', '*.jpg', '*.jpeg', '*.png'];
   var silent   = opts.silent;
   var strategy = selectStrategy(opts);
@@ -84,7 +86,7 @@ digester.process = function (opts, callback) {
       return {
         fullPath: path.relative(base, f.fullPath),
         key: url.resolve(vdir, f.path),
-        url: url.resolve(vdir, f.path)
+        url: (new URIjs(url.resolve(vdir, f.path))).host(host).href()
       };
     }
 

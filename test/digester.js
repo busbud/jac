@@ -91,4 +91,42 @@ describe('Digester', function () {
       }
     });
   });
+
+  describe('digest directory with explicit host', function () {
+    var entries, error;
+
+    before(function (done) {
+      var opts = {
+        root:       __dirname,
+        fileFilter: ["*.gif"],
+        silent:     false,
+        host:       'cdn.cloudfront.net'
+      };
+
+      digester.process(opts, cb);
+
+      function cb (err, res) {
+        error = err;
+        entries = res;
+        done();
+      }
+    });
+
+    it('entries should have the host set only on the url', function () {
+      entries.forEach(verify);
+
+      function verify (e) {
+        e.should.have.property('fullPath');
+        e.should.have.property('key');
+        e.should.have.property('url');
+        e.should.have.property('digest');
+        e.should.have.property('route');
+
+        var prefix = '//cdn.cloudfront.net/';
+        e.url.indexOf(prefix).should.equal(0);
+        e.route.indexOf(prefix).should.equal(-1);
+        e.key.indexOf(prefix).should.equal(-1);
+      }
+    });
+  });
 });
