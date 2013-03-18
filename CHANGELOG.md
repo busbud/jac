@@ -1,6 +1,7 @@
 ## v0.0.4
 
 * Add support to use `jac.resolve` with CSS files (offline)
+* Allow json and js files to be used as configuration inputs for ./bin/jac
 
 ## v0.0.3
 
