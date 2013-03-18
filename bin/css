@@ -36,7 +36,7 @@ while (args.length) {
       break;
     case '-c':
     case '--config':
-      input = arg;
+      input = args.shift();
       break;
     default:
       break;
