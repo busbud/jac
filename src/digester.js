@@ -22,22 +22,6 @@ function selectStrategy(opts) {
 }
 
 /**
- * Generate a route name by injecting the digest into the path
- *
- * @param {Object} entry
- * @return {String}
- */
-function routeName(entry) {
-  var original = new URIjs(entry.url);
-  var modified = original
-    .clone()
-    .host('')
-    .directory(original.directory() + '/' + entry.digest);
-
-  return modified.href();
-}
-
-/**
  * Processes all files under opts.root and generates the config
  * entries for each matched file.
  *
@@ -108,7 +92,15 @@ digester.process = function (opts, callback) {
             return entry.fullPath;
           })
           .map(function (entry) {
-            entry.route = routeName(entry);
+            // generate the urls and route by injecting the digest into the path
+            var original = new URIjs(entry.url);
+            var modified = original
+              .clone()
+              .directory(original.directory() + '/' + entry.digest);
+
+            entry.url   = modified.href();
+            entry.route = modified.host('').href();
+
             return entry;
           })
           .value();

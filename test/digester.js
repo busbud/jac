@@ -80,6 +80,8 @@ describe('Digester', function () {
       function verify (e) {
         e.route.indexOf('?').should.equal(-1);
         e.route.indexOf(e.digest).should.not.equal(-1);
+        e.url.indexOf('?').should.equal(-1);
+        e.url.indexOf(e.digest).should.not.equal(-1);
       }
     });
 
@@ -126,6 +128,17 @@ describe('Digester', function () {
         e.url.indexOf(prefix).should.equal(0);
         e.route.indexOf(prefix).should.equal(-1);
         e.key.indexOf(prefix).should.equal(-1);
+      }
+    });
+
+    it('entries\' route should not have a querystring, but should contain digest in path', function () {
+      entries.forEach(verify);
+
+      function verify (e) {
+        e.route.indexOf('?').should.equal(-1);
+        e.route.indexOf(e.digest).should.not.equal(-1);
+        e.url.indexOf('?').should.equal(-1);
+        e.url.indexOf(e.digest).should.not.equal(-1);
       }
     });
   });
