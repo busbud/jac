@@ -47,20 +47,20 @@ while (args.length) {
       break;
     case '-c':
     case '--config':
-      input = arg;
+      input = path.resolve(args.shift());
       break;
     case '-x':
     case '--extensions':
-      extensions = arg;
+      extensions = args.shift();
       extensionsUsed = true;
       break;
     case '-o':
     case '--output':
-      output = arg;
+      output = path.resolve(args.shift());
       break;
     case '-r':
     case '--root':
-      root = arg;
+      root = args.shift();
       break;
     default:
       break;
@@ -72,7 +72,7 @@ if (!output) {
 }
 
 if (exists(input)) {
-  config      = JSON.parse(fs.readFileSync(input, 'utf-8'));
+  config      = require(input);
   config.root = config.root || root;
 
   if (extensionsUsed) {
