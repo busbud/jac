@@ -100,7 +100,7 @@ describe('Digester', function () {
         root:       __dirname,
         fileFilter: ["*.gif"],
         silent:     false,
-        host:       'cdn.cloudfront.net'
+        host:       'cdn.net'
       };
 
       digester.process(opts, cb);
@@ -122,7 +122,7 @@ describe('Digester', function () {
         e.should.have.property('digest');
         e.should.have.property('route');
 
-        var prefix = '//cdn.cloudfront.net/';
+        var prefix = '//cdn.net/';
         e.url.indexOf(prefix).should.equal(0);
         e.route.indexOf(prefix).should.equal(-1);
         e.key.indexOf(prefix).should.equal(-1);

@@ -22,10 +22,19 @@ var css = module.exports = {};
 css.process = function (config, done) {
   var files       = config.css;
   var silent      = config.silent;
-  var jac         = middleware.create(config);
   var concurrency = 1;
   var sources     = _.values(files);
   var sourcemap   = _.invert(files);
+
+  var assetsByUrl = config.assets.reduce(function (m, asset) {
+    m[asset.url] = asset;
+    return m;
+  }, {});
+
+  var assetsByKey = config.assets.reduce(function (m, asset) {
+    m[asset.key] = asset;
+    return m;
+  }, {});
 
   async.forEachLimit(
     sources,
@@ -65,19 +74,22 @@ css.process = function (config, done) {
 
     steps.push(function makeCachable(contents, cb) {
       var count = 0;
-      var replaced = contents.toString().replace(extractor, function (prop, url) {
-        var uri = new URIjs(url);
+      var replaced = contents.toString().replace(extractor, function (prop, key) {
+        var uri = new URIjs(key);
 
         if (!uri.authority() && !uri.protocol()) {
           count++;
-          try {
-            if (jac.isKnownRoute(url)) {
-              // Route is already transformed
-              return prop;
-            }
-            return prop.replace(url, jac.resolve(url));
-          } catch(ex) {
-            throw new Error(file + ": " + ex.toString() + ' (or refresh/update your css)');
+          if (key in assetsByUrl) {
+            // Route was already transformed
+            return prop;
+          }
+
+          var asset = assetsByKey[key];
+          if (asset) {
+            return prop.replace(key, asset.url);
+          }
+          else {
+            throw new Error('jac: file:' + file + ': key ' + key + ' not found, regenerate jac config (or refresh/update your css)');
           }
         } else {
           return prop;

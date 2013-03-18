@@ -42,7 +42,7 @@ app.use(jac.middleware);
 // Add view that resolves an image url
 app.get('/someview', function (req, res) {
   var jac = res.local('jac')        // returns jac view helper
-    , key = '/images/spacer.gif'    // matches config key
+    , key = '/images/happy.png'     // matches config key
     , url = jac.resolve(key);       // returns url with digest, handled by middleware
 
   res.send(url);
@@ -57,9 +57,10 @@ by the app.
 {
   // required - files served by jac
   assets: [{
-    fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
-    key:      '/images/spacer.gif',
-    route:    '/images/b64Digest/spacer.gif'
+    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),  // local file path
+    key:      '/images/happy.png',                                              // key used in views: jac.resolve('/images/happy.png')
+    route:    '/images/b64Digest/happy.png',                                    // route for middleware
+    url:      '//cdn.host.net/images/b64Digest/happy.png'                       // url output to response and css
   }],
 
   // optional - cache control max age in seconds (default 2 weeks)
@@ -114,9 +115,10 @@ __config.json__
 {
   // required - files served by jac
   assets: [{
-    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),
-    key:      '/images/happy.png',
-    route:    '/images/b64Digest/happy.png'
+    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),  // local file path
+    key:      '/images/happy.png',                                              // key used in views: jac.resolve('/images/happy.png')
+    route:    '/images/b64Digest/happy.png',                                    // route for middleware
+    url:      '//cdn.host.net/images/b64Digest/happy.png'                       // url output to response and css
   }],
 
   css: {

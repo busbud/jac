@@ -9,40 +9,42 @@ var _      = require('lodash');
 describe('CSS filter', function () {
   var css = require('../src/css');
 
-  describe('process', function () {
+  /**
+   * Verify the substitution process
+   *
+   * @param {Object} config
+   * @param {Object} files, where key=output, value=input
+   * @param outputPath
+   * @param expectedPath
+   * @param done
+   */
+  function processAndVerify(config, files, outputPath, expectedPath, done) {
+    config     = _.defaults(config, {silent:true});
+    config.css = files;
 
-    /**
-     * Verify the substitution process
-     *
-     * @param {Object} files, where key=output, value=input
-     * @param outputPath
-     * @param expectedPath
-     * @param done
-     */
-    function verifyProcessing(files, outputPath, expectedPath, done) {
-      css.process(
-        {
-          assets: [
-            {
-              fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
-              key:      '/images/spacer.gif',
-              route:    '/images/b64Digest/spacer.gif'
-            }
-          ],
-          css: files,
-          silent: true
-        },
-        verify
-      );
+    css.process(config, verify);
 
-      function verify() {
-        var outputContent   = fs.readFileSync(outputPath).toString();
-        var expectedContent = fs.readFileSync(expectedPath).toString();
+    function verify() {
+      var outputContent   = fs.readFileSync(outputPath).toString();
+      var expectedContent = fs.readFileSync(expectedPath).toString();
 
-        outputContent.should.equal(expectedContent);
-        done();
-      }
+      outputContent.should.equal(expectedContent);
+      done();
     }
+  }
+
+
+  describe('process', function () {
+    var config ={
+      assets: [
+        {
+          fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
+          key: '/images/spacer.gif',
+          route: '/images/b64Digest/spacer.gif',
+          url: '/images/b64Digest/spacer.gif'
+        }
+      ]
+    };
 
     it('should have a method called process', function () {
       should.exist(css);
@@ -59,7 +61,7 @@ describe('CSS filter', function () {
       // Output is sourced from input
       files[output] = input;
 
-      verifyProcessing(files, output, expected, done);
+      processAndVerify(config, files, output, expected, done);
     });
 
     it('should ignore previously resolved static image references', function (done) {
@@ -71,7 +73,45 @@ describe('CSS filter', function () {
       // Output is sourced from input
       files[output] = input;
 
-      verifyProcessing(files, output, expected, done);
+      processAndVerify(config, files, output, expected, done);
+    });
+  });
+
+  describe('process with host name', function () {
+    var config ={
+      host: "cdn.net",
+      assets: [
+        {
+          fullPath: path.resolve(__dirname, './fixtures/spacer.gif'),
+          key: '/images/spacer.gif',
+          route: '/images/b64Digest/spacer.gif',
+          url: '//cdn.net/images/b64Digest/spacer.gif'
+        }
+      ]
+    };
+
+    it('should replace static image references (and include host name)', function (done) {
+      var expected = path.resolve(__dirname, './fixtures/imagereferences.withhost.expected.css');
+      var input    = path.resolve(__dirname, './fixtures/imagereferences.css');
+      var output   = path.resolve(__dirname, './fixtures/temp/imagereferences.withost.out.css');
+      var files    = {};
+
+      // Output is sourced from input
+      files[output] = input;
+
+      processAndVerify(config, files, output, expected, done);
+    });
+
+    it('should ignore previously resolved static image references, even with host name', function (done) {
+      var expected = path.resolve(__dirname, './fixtures/imagereferences.withhost.expected.css');
+      var input    = expected;
+      var output   = path.resolve(__dirname, './fixtures/temp/imagereferences.withost.out.css');
+      var files    = {};
+
+      // Output is sourced from input
+      files[output] = input;
+
+      processAndVerify(config, files, output, expected, done);
     });
   });
 });

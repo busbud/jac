@@ -12,12 +12,12 @@ var send = require('send');
 module.exports.create = function (config) {
   var assets = config.assets;
 
-  var routes = assets.reduce(function (memo, entry) {
+  var assetsByRoute = assets.reduce(function (memo, entry) {
     memo[entry.route] = entry;
     return memo;
   }, {});
 
-  var keys = assets.reduce(function (memo, entry) {
+  var assetsByKey = assets.reduce(function (memo, entry) {
     memo[entry.key] = entry.route;
     return memo;
   }, {});
@@ -32,8 +32,8 @@ module.exports.create = function (config) {
    * @return {String}
    * @throws {Error} if key not found
    */
-  function resolve (key) {
-    var route = keys[key];
+  function resolveAsset (key) {
+    var route = assetsByKey[key];
 
     if (!route) {
       throw new Error('jac: key ' + key + ' not found, regenerate jac config');
@@ -43,31 +43,21 @@ module.exports.create = function (config) {
   }
 
   /**
-   * Determines if the route is handled by the middleware
-   *
-   * @param url
-   * @return {Boolean}
-   */
-  function isKnownRoute (url) {
-    return url in routes;
-  }
-
-  /**
    * Inject jac img view locals
    *
    * @param res  express response object
    */
   function locals (res) {
     var jac = res.local('jac') || {};
-    jac.resolve = resolve;
+    jac.resolve = resolveAsset;
 
     res.local('jac', jac);
   }
 
   function middleware (req, res, next) {
-    var hit = routes[req.url];
+    var asset = assetsByRoute[req.url];
 
-    if (!hit) {
+    if (!asset) {
       locals(res);
       return next();
     }
@@ -77,15 +67,11 @@ module.exports.create = function (config) {
       path: '<jac.middleware>'
     };
 
-    send(req, hit.fullPath)
+    send(req, asset.fullPath)
       .maxage(config.maxAge)
       .on('error', next)
       .pipe(res);
   }
 
-  return {
-    middleware:   middleware,
-    resolve:      resolve,
-    isKnownRoute: isKnownRoute
-  };
+  return middleware;
 };

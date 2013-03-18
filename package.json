@@ -18,7 +18,7 @@
     "URIjs": "~1.8.3"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --bail"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "dependencies": {
     "async": "~0.1.22",
