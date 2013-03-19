@@ -14,7 +14,7 @@ function selectStrategy(opts) {
   var digestfn = strategy;
 
   if (!_.isFunction(strategy)) {
-    strategy = require('./strategy/hash').create();
+    strategy = require('./strategy/hash').create(opts);
     digestfn = strategy.digest.bind(strategy);
   }
 

@@ -9,7 +9,8 @@ module.exports.create = function (opts) {
 
 function HashStrategy(opts) {
   this.algorithm = opts && opts.algorithm || 'md5';
-  this.length = opts && opts.length || 7;
+  this.salt      = opts && opts.salt || '';
+  this.length    = opts && opts.length || 7;
 }
 
 /**
@@ -23,6 +24,8 @@ HashStrategy.prototype.digest = function (entry, done) {
   var hash = crypto.createHash(self.algorithm);
 
   var s = fs.ReadStream(entry.fullPath);
+
+  hash.update(self.salt.toString());
 
   s.on('data', function(d) {
     hash.update(d);
