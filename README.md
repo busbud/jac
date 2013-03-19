@@ -32,12 +32,12 @@ The following example shows how to wire up jac
 ### App
 ```js
 var express = require('express')
-  , config  = require('./config')
-  , jac     = require('jac').create(config)
-  , app     = express.createServer();
+  , jac     = require('jac')
+  , app     = express.createServer()
+  , config  = require('./config');
 
 // Add middleware for all requests
-app.use(jac.middleware);
+app.use(jac.middleware(config));
 
 // Add view that resolves an image url
 app.get('/someview', function (req, res) {
@@ -103,7 +103,7 @@ will easily be corrected by adjusting the path to the image to make it root rela
 
 Here's an example that will result in jac replacing the image reference
 
-__main.css__
+__src/stylesheets/main.css__
 
 ```css
 body {background: url(/images/happy.png);}
@@ -122,7 +122,7 @@ __config.json__
   }],
 
   css: {
-    'public/stylesheets/main.css': 'src/stylesheets/main.css'
+    'public/stylesheets/main.css': 'src/stylesheets/main.css'                   // format <output>: <input>
   }
 }
 ```
@@ -133,10 +133,16 @@ To run the CSS replacement, update the jac config file to include the css proper
 css --config ./config.json
 ```
 
+The file at public/stylesheets/main.css will now contain the following
+
+```css
+body {background: url(//cdn.host.net/images/b64Digest/happy.png);}
+```
+
 
 ## Compatibility
 This version of jac is compatible with express 2.5.
-It depends on `res.local()` to get and set the view local `jac.img` via middleware.
+It depends on `res.local()` to get and set the view local `jac` via middleware.
 
 ## Production
 To support production usage with the best performance, it is required that a pre-processing step be executed to
