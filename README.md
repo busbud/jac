@@ -1,10 +1,20 @@
-#jac
+#jac [![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
+
+> Really when you push something out live to the world, you never want to change it without changing the name because
+> there are so many misconfigured proxies out there. About 1% to 10% of your users will never get an update
+> unless you change the name.
+
+> You can make it cachable for 10 years, you're never going to push a change without changing the name of the file.<br/>
+
+> <cite>- Steve Souders. HTML5DevConf (Jan 10, 2013).
+  <a href="http://marakana.com/s/post/1360/cache_is_king_steve_souders_html5_video">Cache is king</a>
+  availalable from <a href="http://mrkn.co/3wzua">http://mrkn.co/3wzua</a></cite>
+
+
 jac provides methods to reference asset urls using permanently cachable urls.
 
 It achieves this by using urls unique to each version of a given asset, and provides middleware to serve the asset with
 long cache durations.
-
-[![Build Status](https://travis-ci.org/busbud/jac.png)](https://travis-ci.org/busbud/jac)
 
 #Usage
 jac middleware will handle asset file serving and asset url resolution
@@ -22,17 +32,17 @@ The following example shows how to wire up jac
 ### App
 ```js
 var express = require('express')
-  , config  = require('./config')
-  , jac     = require('jac').create(config)
-  , app     = express.createServer();
+  , jac     = require('jac')
+  , app     = express.createServer()
+  , config  = require('./config');
 
 // Add middleware for all requests
-app.use(jac.middleware);
+app.use(jac.middleware(config));
 
 // Add view that resolves an image url
 app.get('/someview', function (req, res) {
   var jac = res.local('jac')        // returns jac view helper
-    , key = '/images/spacer.gif'    // matches config key
+    , key = '/images/happy.png'     // matches config key
     , url = jac.resolve(key);       // returns url with digest, handled by middleware
 
   res.send(url);
@@ -47,9 +57,10 @@ by the app.
 {
   // required - files served by jac
   assets: [{
-    fullPath: require('path').resolve(__dirname, './public/images/spacer.gif'),
-    key:      '/images/spacer.gif',
-    route:    '/images/spacer.gif?b64Digest'
+    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),  // local file path
+    key:      '/images/happy.png',                                              // key used in views: jac.resolve('/images/happy.png')
+    route:    '/images/b64Digest/happy.png',                                    // route for middleware
+    url:      '//cdn.host.net/images/b64Digest/happy.png'                       // url output to response and css
   }],
 
   // optional - cache control max age in seconds (default 2 weeks)
@@ -82,10 +93,56 @@ function save (err, assets) {
 digest(config, save);
 ```
 
+### Replacing references in CSS
+jac can be configured to process CSS files as part of the update process. It will ignore image references from external
+sites (eg urls with an [authority](http://medialize.github.com/URI.js/docs.html#accessors-authority)) and data-uris,
+and will attempt to resolve all other urls.
+
+If it fails to resolve a url, it will throw an error, allowing you to find the problematic reference. Most likely, this
+will easily be corrected by adjusting the path to the image to make it root relative.
+
+Here's an example that will result in jac replacing the image reference
+
+__src/stylesheets/main.css__
+
+```css
+body {background: url(/images/happy.png);}
+```
+
+__config.json__
+
+```js
+{
+  // required - files served by jac
+  assets: [{
+    fullPath: require('path').resolve(__dirname, './public/images/happy.png'),  // local file path
+    key:      '/images/happy.png',                                              // key used in views: jac.resolve('/images/happy.png')
+    route:    '/images/b64Digest/happy.png',                                    // route for middleware
+    url:      '//cdn.host.net/images/b64Digest/happy.png'                       // url output to response and css
+  }],
+
+  css: {
+    'public/stylesheets/main.css': 'src/stylesheets/main.css'                   // format <output>: <input>
+  }
+}
+```
+
+To run the CSS replacement, update the jac config file to include the css property and use the following command
+
+```bash
+css --config ./config.json
+```
+
+The file at public/stylesheets/main.css will now contain the following
+
+```css
+body {background: url(//cdn.host.net/images/b64Digest/happy.png);}
+```
+
 
 ## Compatibility
 This version of jac is compatible with express 2.5.
-It depends on `res.local()` to get and set the view local `jac.img` via middleware.
+It depends on `res.local()` to get and set the view local `jac` via middleware.
 
 ## Production
 To support production usage with the best performance, it is required that a pre-processing step be executed to
@@ -110,6 +167,8 @@ scripts section after install.
   }
 }
 ```
+
+By default, jac will load the config from the `jac.json` file at the project root.
 
 # Running Tests
 To run the test suite first invoke the following command within the repo, installing the development dependencies:

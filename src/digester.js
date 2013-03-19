@@ -1,7 +1,10 @@
+"use strict";
+
 var _        = require('lodash');
 var url      = require('url');
 var path     = require('path');
 var async    = require('async');
+var URIjs    = require('URIjs');
 var readdirp = require('readdirp');
 
 var digester = module.exports = {};
@@ -11,15 +14,11 @@ function selectStrategy(opts) {
   var digestfn = strategy;
 
   if (!_.isFunction(strategy)) {
-    strategy = require('./strategy/hash').create();
+    strategy = require('./strategy/hash').create(opts);
     digestfn = strategy.digest.bind(strategy);
   }
 
   return digestfn;
-}
-
-function routeName(entry) {
-  return entry.url + '?' + entry.digest;
 }
 
 /**
@@ -32,6 +31,7 @@ function routeName(entry) {
 digester.process = function (opts, callback) {
   var root = opts.root || '.';
   var vdir = opts.vdir || '/';
+  var host = opts.host || '';
   var filter   = opts.fileFilter || ['*.gif', '*.jpg', '*.jpeg', '*.png'];
   var silent   = opts.silent;
   var strategy = selectStrategy(opts);
@@ -69,8 +69,8 @@ digester.process = function (opts, callback) {
     function toPaths (f) {
       return {
         fullPath: path.relative(base, f.fullPath),
-        key: f.path,
-        url: url.resolve(vdir, f.path)
+        key: url.resolve(vdir, f.path),
+        url: (new URIjs(url.resolve(vdir, f.path))).host(host).href()
       };
     }
 
@@ -92,7 +92,15 @@ digester.process = function (opts, callback) {
             return entry.fullPath;
           })
           .map(function (entry) {
-            entry.route = routeName(entry);
+            // generate the urls and route by injecting the digest into the path
+            var original = new URIjs(entry.url);
+            var modified = original
+              .clone()
+              .directory(original.directory() + '/' + entry.digest);
+
+            entry.url   = modified.href();
+            entry.route = modified.host('').href();
+
             return entry;
           })
           .value();

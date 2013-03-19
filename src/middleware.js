@@ -1,3 +1,5 @@
+"use strict";
+
 var _    = require('lodash');
 var send = require('send');
 
@@ -10,13 +12,13 @@ var send = require('send');
 module.exports.create = function (config) {
   var assets = config.assets;
 
-  var routes = assets.reduce(function (memo, entry) {
+  var assetsByRoute = assets.reduce(function (memo, entry) {
     memo[entry.route] = entry;
     return memo;
   }, {});
 
-  var keys = assets.reduce(function (memo, entry) {
-    memo[entry.key] = entry.route;
+  var assetsByKey = assets.reduce(function (memo, entry) {
+    memo[entry.key] = entry;
     return memo;
   }, {});
 
@@ -30,14 +32,14 @@ module.exports.create = function (config) {
    * @return {String}
    * @throws {Error} if key not found
    */
-  function resolve (key) {
-    var route = keys[key];
+  function resolveAsset (key) {
+    var asset = assetsByKey[key];
 
-    if (!route) {
-      throw new Error('jac-img: key ' + key + ' not found, regenerate jac-img config');
+    if (!asset) {
+      throw new Error('jac: key ' + key + ' not found, regenerate jac config or update key value to match key in jac config');
     }
 
-    return route;
+    return asset.url;
   }
 
   /**
@@ -47,15 +49,15 @@ module.exports.create = function (config) {
    */
   function locals (res) {
     var jac = res.local('jac') || {};
-    jac.resolve = resolve;
+    jac.resolve = resolveAsset;
 
     res.local('jac', jac);
   }
 
   function middleware (req, res, next) {
-    var hit = routes[req.url];
+    var asset = assetsByRoute[req.url];
 
-    if (!hit) {
+    if (!asset) {
       locals(res);
       return next();
     }
@@ -65,14 +67,11 @@ module.exports.create = function (config) {
       path: '<jac.middleware>'
     };
 
-    send(req, hit.fullPath)
+    send(req, asset.fullPath)
       .maxage(config.maxAge)
       .on('error', next)
       .pipe(res);
   }
 
-  return {
-    middleware: middleware,
-    resolve: resolve
-  };
+  return middleware;
 };
