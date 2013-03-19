@@ -1,13 +1,16 @@
+"use strict";
+
 var fs     = require('fs');
 var crypto = require('crypto');
 
 module.exports.create = function (opts) {
-  return new hashStrategy(opts);
+  return new HashStrategy(opts);
 };
 
-function hashStrategy(opts) {
+function HashStrategy(opts) {
   this.algorithm = opts && opts.algorithm || 'md5';
-  this.length = opts && opts.length || 7;
+  this.salt      = opts && opts.salt || '';
+  this.length    = opts && opts.length || 7;
 }
 
 /**
@@ -16,11 +19,13 @@ function hashStrategy(opts) {
  * @param entry {fullpath, key, url, mtime}
  * @param done  fn(err, entry)
  */
-hashStrategy.prototype.digest = function (entry, done) {
+HashStrategy.prototype.digest = function (entry, done) {
   var self = this;
   var hash = crypto.createHash(self.algorithm);
 
   var s = fs.ReadStream(entry.fullPath);
+
+  hash.update(self.salt.toString());
 
   s.on('data', function(d) {
     hash.update(d);
