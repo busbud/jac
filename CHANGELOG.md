@@ -1,3 +1,7 @@
+## v0.0.5
+
+* Add 'Vary: Accept-Encoding' response header to handle proxies and CDNs
+
 ## v0.0.4
 
 * Add support to use `jac.resolve` with CSS files (offline)

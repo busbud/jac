@@ -60,6 +60,7 @@ describe('Middleware', function () {
         .expect('Cache-Control', 'public, max-age=' + twoweeks)
         .expect('Content-Type', 'image/gif')
         .expect('Content-Length', '43')
+        .expect('Vary', 'Accept-Encoding')
         .expect(200, done);
     });
 

@@ -67,6 +67,9 @@ module.exports.create = function (config) {
       path: '<jac.middleware>'
     };
 
+    // Add Vary: Accept-Encoding to deal with proxies on CDNs and such
+    res.setHeader('Vary', 'Accept-Encoding');
+
     send(req, asset.fullPath)
       .maxage(config.maxAge)
       .on('error', next)
