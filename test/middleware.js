@@ -32,18 +32,18 @@ describe('Middleware', function () {
 
       // Set up views for testing middleware
       app.get('/view-spacer', function (req, res) {
-        res.send(res.local('jac').resolve('/images/spacer.gif'));
+        res.send(res.locals.jac.resolve('/images/spacer.gif'));
       });
       app.get('/view-unresolved', function (req, res) {
-        res.send(res.local('jac').resolve('/images/noexisto.gif'));
+        res.send(res.locals.jac.resolve('/images/noexisto.gif'));
       });
-      app.error(function (err, req, res, next) {
+      app.use(function (err, req, res, next) {
         res.send(err.message, 500);
       });
     });
 
     after(function () {
-      app.close();
+      app = null;
     });
 
     it('should not be null', function () {
