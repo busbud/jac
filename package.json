@@ -1,6 +1,6 @@
 {
   "name": "jac",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "jac provides methods to reference asset urls using permanently cachable urls.",
   "main": "index",
   "engines": {
@@ -13,7 +13,7 @@
   "devDependencies": {
     "mocha": "~1.7.4",
     "supertest": "~0.5.1",
-    "express": "~2.5.11",
+    "express": "~3.4.0",
     "should": "~1.2.1",
     "URIjs": "~1.8.3"
   },

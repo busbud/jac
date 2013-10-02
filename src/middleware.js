@@ -42,23 +42,15 @@ module.exports.create = function (config) {
     return asset.url;
   }
 
-  /**
-   * Inject jac img view locals
-   *
-   * @param res  express response object
-   */
-  function locals (res) {
-    var jac = res.local('jac') || {};
-    jac.resolve = resolveAsset;
-
-    res.local('jac', jac);
-  }
-
   function middleware (req, res, next) {
     var asset = assetsByRoute[req.url];
 
     if (!asset) {
-      locals(res);
+
+      var jac = res.locals.jac || {};
+      jac.resolve = resolveAsset;
+      res.locals.jac = jac;
+      
       return next();
     }
 

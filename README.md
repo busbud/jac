@@ -24,7 +24,7 @@ Install it using
     npm install jac
 
 ## Example
-The following example shows how to wire up jac
+The following example shows how to wire up jac with an express 3.x app
  * App code sets up the jac middleware
  * A JSON file stores the configuration for the jac middleware
  * A script updates the configuration file
@@ -33,7 +33,7 @@ The following example shows how to wire up jac
 ```js
 var express = require('express')
   , jac     = require('jac')
-  , app     = express.createServer()
+  , app     = express()
   , config  = require('./config');
 
 // Add middleware for all requests
@@ -41,7 +41,7 @@ app.use(jac.middleware(config));
 
 // Add view that resolves an image url
 app.get('/someview', function (req, res) {
-  var jac = res.local('jac')        // returns jac view helper
+  var jac = res.locals.jac        // returns jac view helper
     , key = '/images/happy.png'     // matches config key
     , url = jac.resolve(key);       // returns url with digest, handled by middleware
 
@@ -141,8 +141,8 @@ body {background: url(//cdn.host.net/images/b64Digest/happy.png);}
 
 
 ## Compatibility
-This version of jac is compatible with express 2.5.
-It depends on `res.local()` to get and set the view local `jac` via middleware.
+This version of jac is compatible with express 3.x.
+It depends on `res.locals` to get and set the view local `jac` via middleware.
 
 ## Production
 To support production usage with the best performance, it is required that a pre-processing step be executed to
