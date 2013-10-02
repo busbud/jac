@@ -1,3 +1,7 @@
+## v0.1.0
+
+* Update for express 3 compatibility.
+
 ## v0.0.5
 
 * Add 'Vary: Accept-Encoding' response header to handle proxies and CDNs
